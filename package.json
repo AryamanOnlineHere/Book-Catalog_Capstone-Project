@@ -1,0 +1,28 @@
+{
+  "name": "book_catalog",
+  "version": "1.0.0",
+  "description": "Book catalog application using nodeJs mongoose",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AryamanOnlineHere/Book-Catalog_Capstone-Project.git"
+  },
+  "keywords": [
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AryamanOnlineHere/Book-Catalog_Capstone-Project/issues"
+  },
+  "homepage": "https://github.com/AryamanOnlineHere/Book-Catalog_Capstone-Project#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.2"
+  }
+}
