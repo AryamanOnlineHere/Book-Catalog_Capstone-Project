@@ -11,3 +11,11 @@ exports.add=async(request,response)=>{
 
 }
 
+exports.getall=async(request,response)=>{
+try {
+    const books=await Book.find();
+    response.status(200).json(books); 
+} catch (error) {
+    response.status(500).json({message: error.message});
+}
+}
