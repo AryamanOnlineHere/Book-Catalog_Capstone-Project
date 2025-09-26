@@ -1,5 +1,5 @@
 const controller= require("../controllers/book.controller");
-const {title,genre,author,description}= require('../validation-rules/bookValidationRules');
+const {title,published,genre,author,description}= require('../validation-rules/bookValidationRules');
 const path="/api/books";
 const validate=validations=>{
     return async(request,response,next)=>{
@@ -14,6 +14,6 @@ const validate=validations=>{
 };
 
 module.exports=function(app){
-    app.post(path,validate([title,genre,author,description]),controller.add);
+    app.post(path,validate([title,published,genre,author,description]),controller.add);
 }
 
