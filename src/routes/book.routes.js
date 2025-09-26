@@ -1,5 +1,5 @@
 const controller= require("../controllers/book.controller");
-const {body,validationResult}= require('express-validator');
+const {title,genre,author,description}= require('../validation-rules/bookValidationRules');
 const path="/api/books";
 const validate=validations=>{
     return async(request,response,next)=>{
@@ -14,7 +14,6 @@ const validate=validations=>{
 };
 
 module.exports=function(app){
-    app.post(path,validate([body('title').notEmpty().withMessage('Title is required').isLength({max:10}).withMessage('Title connot exceed 10 charecter')]),controller.add);
-    app.get(path,controller.getall);
+    app.post(path,validate([title,genre,author,description]),controller.add);
 }
 
