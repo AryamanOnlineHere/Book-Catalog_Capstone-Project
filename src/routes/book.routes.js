@@ -14,6 +14,17 @@ const validate=validations=>{
 };
 
 module.exports=function(app){
-    app.post(path,validate([title,published,genre,author,description]),controller.add);
+
+    //BOOK CRUD
+    app.post(path,validate([title,published,genre,author,description]),controller.addBook);
+    app.get(path, controller.getall);
+    app.put(`${path}/:bookId`,controller.updateBookById);
+    app.delete(`${path}/:bookId`,controller.deleteBook);
+
+
+    //Review CRUD
+    app.post(`${path}/:bookId/reviews`,controller.addReview);
+    app.get(`${path}/:bookId/reviews`,controller.getAllReview);
+
 }
 
