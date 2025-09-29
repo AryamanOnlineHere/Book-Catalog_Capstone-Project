@@ -1,8 +1,8 @@
 const { response } = require("express");
 const Book=require("../models/book.model");
-const Review=require("../models/review.model")
+const Review=require("../models/review.model");
 
-
+//Book CRUD Operation
 exports.addBook = async (request, response) => {
   try {
     const { title } = request.body;
@@ -39,8 +39,8 @@ exports.updateBookById = async (request, response) => {
     const updateData = request.body;
 
     const updatedBook = await Book.findByIdAndUpdate(bookId, updateData, {
-      new: true,            // Return the updated document
-      runValidators: true   // Run schema validations
+      new: true,            
+      runValidators: true  
     });
 
     if (!updatedBook) {
@@ -62,31 +62,5 @@ try {
 }
 };
 
-exports.addReview = async (req, res) => {
-    try {
-        const { rating, comment } = req.body;
-        const { bookId } = req.params;
 
-        const review = new Review({
-            book: bookId,
-            rating,
-            comment
-        });
-        const savedReview = await review.save();
-        res.status(201).json(savedReview);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-};
 
-exports.getAllReview = async (request, response) => {
-  try {
-    const { bookId } = request.params;
-
-    const reviews = await Review.find({ book: bookId });
-
-    response.status(200).json(reviews);
-  } catch (error) {
-    response.status(500).json({ message: error.message });
-  }
-};

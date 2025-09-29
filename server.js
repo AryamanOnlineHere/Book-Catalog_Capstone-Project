@@ -24,7 +24,7 @@ db.mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`
     console.log("Connected to MongoDB");
 })
 .catch(err=>{
-    console.log("connection error",err);
+    console.error("connection error",err);
     process.exit();
 });
 require("./src/routes/book.routes")(app);
@@ -33,8 +33,8 @@ const PORT=process.env.PORT || 8080;
 app.listen(PORT,()=>{
     console.log(`server is running on PORT no : ${PORT}`);
 });
-
-app.use((err,req,next)=>{
+// Global error handler
+app.use((err,request,response,next)=>{
     console.log(err.stack);
     response.status(err.status||500).json({error:'Internal Server Error'});
 
