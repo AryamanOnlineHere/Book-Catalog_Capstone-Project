@@ -1,4 +1,7 @@
 const controller= require("../controllers/book.controller");
+const ReviewController=require("../controllers/review.controller");
+const {rating,comment}=require("../validation-rules/reviewValidator");
+
 const {title,published,genre,author,description}= require('../validation-rules/bookValidationRules');
 const path="/api/books";
 const validate=validations=>{
@@ -21,10 +24,10 @@ module.exports=function(app){
     app.put(`${path}/:bookId`,controller.updateBookById);
     app.delete(`${path}/:bookId`,controller.deleteBook);
 
-
     //Review CRUD
-    app.post(`${path}/:bookId/reviews`,controller.addReview);
-    app.get(`${path}/:bookId/reviews`,controller.getAllReview);
-
+    app.post(`${path}/:bookId/reviews`,validate([rating,comment]),ReviewController.addReview);
+    app.get(`${path}/:bookId/reviews`,ReviewController.getAllReview);
+    app.put(`${path}/:reviewId/reviews`,ReviewController.updateReviewById);
+    app.delete(`${path}/:reviewId/reviews`,ReviewController.deleteReview);
 }
 
