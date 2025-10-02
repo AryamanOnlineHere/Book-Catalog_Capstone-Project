@@ -47,8 +47,8 @@ exports.updateReviewById= async(request,response)=>{
 exports.deleteReview=async(request,response)=>{
     try {
         const{reviewId}=request.params;
-        
         const deleteReview=await Review.findByIdAndDelete(reviewId);
+        
         if(!deleteReview){
             return response.status(404).jsone({message:"Review not deleted"});
         }

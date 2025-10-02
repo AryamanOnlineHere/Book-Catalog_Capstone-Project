@@ -1,41 +1,46 @@
 const express = require("express");
-const cors=require("cors");
-const dbConfig=require ("./src/config/db.config")
-const Book=require("./src/models/book.model");
+const router = express.Router();
+const cors = require("cors");
+const dbConfig = require("./src/config/db.config");
+require("dotenv").config();
 
-const app =express();
+const app = express();
+app.use(express.json());
 
-var corsOptions={
-    origin:"http://localhost:8081"
+
+const corsOptions = {
+  origin: "http://localhost:8081"
 };
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 
-const db=require("./src/models/index");
-// const Book=db.books
+const db = require("./src/models/index");
 
-db.mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`,{
-    useNewUrlParser:true,
-    useUnifiedTopology:true
-
+db.mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 })
-.then(()=>{
-    console.log("Connected to MongoDB");
+.then(() => {
+  console.log("Connected to MongoDB");
 })
-.catch(err=>{
-    console.error("connection error",err);
-    process.exit();
+.catch(err => {
+  console.error(" Connection error:", err);
+  process.exit();
 });
+
 require("./src/routes/book.routes")(app);
+require("./src/routes/auth.routes")(app);
 
-const PORT=process.env.PORT || 8080;
-app.listen(PORT,()=>{
-    console.log(`server is running on PORT no : ${PORT}`);
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server is running on PORT: ${PORT}`);
 });
+
 // Global error handler
-app.use((err,request,response,next)=>{
-    console.log(err.stack);
-    response.status(err.status||500).json({error:'Internal Server Error'});
-
+app.use((err, request, response, next) => {
+  console.error(err.stack);
+  response.status(err.status || 500).json({ error: "Internal Server Error" });
 });
+

@@ -1,3 +1,1 @@
-module.exports={
-    secret:"AdminSecret"
-};
+export const secret = "AdminSecret";
