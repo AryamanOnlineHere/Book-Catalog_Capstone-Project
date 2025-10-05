@@ -31,6 +31,7 @@ db.mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`
 
 require("./src/routes/book.routes")(app);
 require("./src/routes/auth.routes")(app);
+require("./src/routes/admin.routes")(app);
 
 
 const PORT = process.env.PORT || 8080;

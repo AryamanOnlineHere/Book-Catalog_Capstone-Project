@@ -4,7 +4,8 @@
   "description": "Book catalog application using nodeJs mongoose",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -28,5 +29,8 @@
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.2"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0"
   }
 }
