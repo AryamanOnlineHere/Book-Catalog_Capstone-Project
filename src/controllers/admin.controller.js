@@ -10,7 +10,6 @@ exports.listUsers=async (request,response)=>{
         response.status(400).json({message:error.message})
     }
 };
-
 exports.updateUser=async(request, response)=>{
     try {
         const {userId}=request.params;
