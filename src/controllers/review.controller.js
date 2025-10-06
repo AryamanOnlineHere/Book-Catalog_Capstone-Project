@@ -1,61 +1,85 @@
 const { response } = require("express");
-const Review=require("../models/review.model");
+const Review = require("../models/review.model");
 
 // Review CRUD operations
 exports.addReview = async (request, response) => {
-    try {
-        const { rating, comment } = request.body;
-        const { bookId } = request.params;
+  try {
+    const { rating, comment } = request.body;
+    const { bookId } = request.params;
 
-        const review = new Review({
-            book: bookId,
-            rating,
-            comment
-        });
-        const savedReview = await review.save();
-        response.status(201).json(savedReview);
-    } catch (error) {
-        response.status(400).json({ message: error.message });
-    }
+    const review = new Review({
+      book: bookId,
+      rating,
+      comment,
+      reviewer: request.user._id,
+    });
+    const savedReview = await review.save();
+    response.status(201).json(savedReview);
+  } catch (error) {
+    response.status(400).json({ message: error.message });
+  }
 };
 
 exports.getAllReview = async (request, response) => {
-    const { bookId } = request.params;
-    const reviews = await Review.find({ book: bookId });
+  const { bookId } = request.params;
+  const reviews = await Review.find({ book: bookId });
 
-    response.status(200).json(reviews);
-}
+  response.status(200).json(reviews);
+};
 
-exports.updateReviewById= async(request,response)=>{
-    try {
-         const {reviewId}=request.params;
-         const updateData=request.body;
+exports.updateReviewById = async (request, response) => {
+  try {
+    const { reviewId } = request.params;
+    const updateData = request.body;
 
-         const updateReview=await Review.findByIdAndUpdate(reviewId,updateData,{
-            new:true,
-            runValidators:true
-         })
-         if(!updateReview){
-            return response.status(404).json({message:"Review not found"});
-         }
-         response.status(200).json(updateReview);
-    } catch (error) {
-        response.status(400).json({message:"message not found"});
-        
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      return response.status(404).json({ message: "Review not found" });
     }
-}
-exports.deleteReview=async(request,response)=>{
-    try {
-        const{reviewId}=request.params;
-        const deleteReview=await Review.findByIdAndDelete(reviewId);
-        
-        if(!deleteReview){
-            return response.status(404).jsone({message:"Review not deleted"});
-        }
-        response.status(200).json({message:"Review sucessfully Deleted",Review:reviewId});
-        
-    } catch (error) {
-        response.status(400).json({message:error.message});
-        
+
+    // Check if the logged-in user is the reviewer
+    if (!review.reviewer || !review.reviewer.equals(request.user._id)) {
+      return response
+        .status(403)
+        .json({
+          message: "Access denied. You can only update your own review.",
+        });
     }
-}
+
+    const updatedReview = await Review.findByIdAndUpdate(reviewId, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    response.status(200).json(updatedReview);
+  } catch (error) {
+    response.status(400).json({ message: error.message });
+  }
+};
+
+exports.deleteReview = async (request, response) => {
+  try {
+    const { reviewId } = request.params;
+
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      return response.status(404).json({ message: "Review not found" });
+    }
+
+    // Check if the logged-in user is the reviewer
+    if (!review.reviewer.equals(request.user._id)) {
+      return response
+        .status(403)
+        .json({
+          message: "Access denied. Reviewer can only delete it's own review.",
+        });
+    }
+
+    await Review.findByIdAndDelete(reviewId);
+    response
+      .status(200)
+      .json({ message: "Review successfully deleted", reviewId });
+  } catch (error) {
+    response.status(400).json({ message: error.message });
+  }
+};
