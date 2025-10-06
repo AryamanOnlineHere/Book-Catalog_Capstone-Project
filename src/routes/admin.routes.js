@@ -1,4 +1,3 @@
-const express = require('express');
 const controller = require("../controllers/admin.controller");
 const { verifyToken, isAdmin } = require("../middlewares/authJwt");
 const path = "/api/admin";

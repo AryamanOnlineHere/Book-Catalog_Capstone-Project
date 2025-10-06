@@ -1,5 +1,4 @@
-const Admin = require("../models/admin.model");
-const Author = require("../models/author.model");
+const User=require("../models/user.model")
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -10,7 +9,6 @@ const generateToken = (user) => {
     expiresIn: "1d",
   });
 };
-
 exports.signup = async (request, response) => {
   try {
     const { username, password, email, role } = request.body;
@@ -22,13 +20,13 @@ exports.signup = async (request, response) => {
       });
     }
     if (role === "admin") {
-      const admin = new Admin({ username, password, email, role });
+      const admin = new User({ username, password, email, role });
       await admin.save();
       return response
         .status(201)
         .json({ message: "Admin registered successfully" });
     } else if (role === "author") {
-      const author = new Author({ username, password, email, role });
+      const author = new User({ username, password, email, role });
       await author.save();
       return response
         .status(201)
@@ -47,11 +45,11 @@ exports.signin = async (request, response) => {
   try {
     const { email, password } = request.body;
 
-    let user = await Admin.findOne({ email });
+    let user = await User.findOne({ email });
     let role = "admin";
 
     if (!user) {
-      user = await Author.findOne({ email });
+      user = await User.findOne({ email });
       role = "author";
     }
 

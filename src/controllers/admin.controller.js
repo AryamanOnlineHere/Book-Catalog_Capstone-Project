@@ -1,10 +1,10 @@
 const { request } = require("express");
-const Author=require("../models/author.model");
+const User=require("../models/user.model");
 
 exports.listUsers=async (request,response)=>{
     try {
-        const author= await Author.find();
-        response.status(200).json(author)
+        const users= await User.find();
+        response.status(200).json(users)
         
     } catch (error) {
         response.status(400).json({message:error.message})
@@ -15,7 +15,7 @@ exports.updateUser=async(request, response)=>{
         const {userId}=request.params;
         const updateData=request.body;
 
-         const updateUser=await Author.findByIdAndUpdate(userId,updateData,{
+         const updateUser=await User.findByIdAndUpdate(userId,updateData,{
             new:true,
             runValidators:true
          });
@@ -32,7 +32,7 @@ exports.updateUser=async(request, response)=>{
 exports.deleteUser=async(request,response)=>{
     try {
         const {userId}=request.params;
-        const deleteUser=await Author.findByIdAndDelete(userId);
+        const deleteUser=await User.findByIdAndDelete(userId);
 
         if(!deleteUser){
             response.status(400).json({message:"unable to delete user"})
