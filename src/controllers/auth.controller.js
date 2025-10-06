@@ -3,7 +3,7 @@ const Author = require("../models/author.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-const {isPasswordValid}=require("../validation-rules/passwordValidator")
+const { isPasswordValid } = require("../validation-rules/passwordValidator");
 
 const generateToken = (user) => {
   return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
@@ -14,8 +14,6 @@ const generateToken = (user) => {
 exports.signup = async (request, response) => {
   try {
     const { username, password, email, role } = request.body;
-        console.log("Password received:", password);
-console.log("Is valid:", isPasswordValid(password));
 
     if (!isPasswordValid(password)) {
       return response.status(400).json({
