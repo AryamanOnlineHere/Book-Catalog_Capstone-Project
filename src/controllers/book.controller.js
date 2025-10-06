@@ -5,21 +5,25 @@ const Review=require("../models/review.model");
 //Book CRUD Operation
 exports.addBook = async (request, response) => {
   try {
-    const { title } = request.body;
+    const { title, genre, published, description } = request.body;
     const existingBook = await Book.findOne({ title: title.trim() });
-
     if (existingBook) {
       return response.status(409).json({ message: "Book with this title already exists" });
     }
-
-    const book = new Book(request.body);
+    const book = new Book({
+      title,
+      genre,
+      published,
+      description,
+      author: request.user._id
+    });
     const savedBook = await book.save();
-
     response.status(201).json(savedBook);
   } catch (error) {
     response.status(400).json({ message: error.message });
   }
 };
+
 exports.deleteBook=async(request,response)=>{
     try {
         const {bookId}=request.params;

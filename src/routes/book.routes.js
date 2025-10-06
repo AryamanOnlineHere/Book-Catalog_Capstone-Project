@@ -2,7 +2,7 @@ const controller = require("../controllers/book.controller");
 const ReviewController=require("../controllers/review.controller");
 const {rating,comment}=require("../validation-rules/reviewValidator");
 const { verifyToken, allowAuthorOrAdmin, isAdmin } = require("../middlewares/authJwt");
-const { title, published, genre, author, description } = require('../validation-rules/bookValidationRules');
+const { title, published, genre, description } = require('../validation-rules/bookValidationRules');
 const path = "/api/books";
 
 const validate = validations => {
@@ -18,7 +18,7 @@ const validate = validations => {
 };
 module.exports = function (app) {
   // BOOK CRUD
-  app.post(path, verifyToken, allowAuthorOrAdmin, validate([title, published, genre, author, description]), controller.addBook);
+  app.post(path, verifyToken, allowAuthorOrAdmin, validate([title, published, genre, description]), controller.addBook);
   app.get(path,controller.getall);
   app.put(`${path}/:bookId`, verifyToken, allowAuthorOrAdmin, controller.updateBookById);
   app.delete(`${path}/:bookId`, verifyToken, allowAuthorOrAdmin, controller.deleteBook); 

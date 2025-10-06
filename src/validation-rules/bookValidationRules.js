@@ -15,6 +15,4 @@ exports.published = body('published')
     }
     return true;
   });
-  
-exports.author = body('author').notEmpty().withMessage('Author is required').isLength({ max: 20 }).withMessage('Author cannot exceed 20 characters')
 exports.description = body('description').notEmpty().withMessage('Description is required').isLength({ max: 1000 }).withMessage('Description cannot exceed 1000 characters')
