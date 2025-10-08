@@ -42,7 +42,7 @@ exports.updateReviewById = async (request, response) => {
       return response
         .status(403)
         .json({
-          message: "Access denied. You can only update your own review.",
+          message: "Access denied. Reviewer can only update your thier review.",
         });
     }
 
