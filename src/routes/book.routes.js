@@ -29,7 +29,3 @@ module.exports = function (app) {
   app.put(`${path}/:reviewId/reviews`, [verifyToken, allowAuthorOrAdmin], ReviewController.updateReviewById);
   app.delete(`${path}/:reviewId/reviews`, [verifyToken, allowAuthorOrAdmin], ReviewController.deleteReview); 
 };
-
-
-
- 
