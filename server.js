@@ -7,12 +7,15 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 
+global.__basedir = __dirname;
+
+const initRoutes = require("./src/routes/upload.routes");
+
 
 const corsOptions = {
   origin: "http://localhost:8081"
 };
 app.use(cors(corsOptions));
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./src/models/index");
@@ -28,10 +31,11 @@ db.mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`
   console.error(" Connection error:", err);
   process.exit();
 });
-
 require("./src/routes/book.routes")(app);
 require("./src/routes/auth.routes")(app);
 require("./src/routes/admin.routes")(app);
+initRoutes(app);
+
 
 
 const PORT = process.env.PORT || 8080;
