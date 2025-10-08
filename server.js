@@ -3,7 +3,7 @@ const router = express.Router();
 const cors = require("cors");
 const dbConfig = require("./src/config/db.config");
 require("dotenv").config();
-
+const path=require("path")
 const app = express();
 app.use(express.json());
 
@@ -17,6 +17,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(__basedir, "uploads")));
 
 const db = require("./src/models/index");
 
