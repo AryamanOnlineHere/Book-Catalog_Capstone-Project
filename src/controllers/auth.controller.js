@@ -45,23 +45,17 @@ exports.signin = async (request, response) => {
     const { email, password } = request.body;
 
     let user = await User.findOne({ email });
-    let role = "admin";
-
-    if (!user) {
-      user = await User.findOne({ email });
-      role = "author";
-    }
 
     if (!user)
       return response.status(400).json({ error: "Invalid credentials" });
+      const isMatch = await bcrypt.compare(password, user.password);
 
-    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return response.status(400).json({ error: "Invalid credentials" });
 
     const token = generateToken(user);
 
-    response.json({ token, role });
+    response.json({ token, role:user.role });
   } catch (err) {
     response.status(500).json({ error: err.message });
   }
