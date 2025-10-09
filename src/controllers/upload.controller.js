@@ -69,17 +69,18 @@ exports.downloadImage = (request, response) => {
   });
 };
 
-exports.removeImage = (request, response) => {
-  const bookId= request.params.bookId;
-  const fileName = request.params.name;
-  const filePath = path.join(__basedir, "uploads",bookId, fileName);
-  
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      response.status(500).send({
-        message: "COuld not delete file" + err,
-      });
-    }
-    response.status(200).send({ message: "file scucessfully deleted" });
-  });
-};
+exports.removeImage = async (req, res) => {
+  try {
+    const { bookId } = req.params;
+
+    const updatedBook = await Book.findByIdAndUpdate(
+      bookId,
+      { image: null },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "Image removed", book: updatedBook });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
