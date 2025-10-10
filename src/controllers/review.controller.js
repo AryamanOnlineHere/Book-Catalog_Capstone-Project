@@ -32,18 +32,23 @@ exports.updateReviewById = async (request, response) => {
     const { reviewId } = request.params;
     const updateData = request.body;
 
+console.log("Review ID:", reviewId);
+
+
     const review = await Review.findById(reviewId);
     if (!review) {
       return response.status(404).json({ message: "Review not found" });
     }
 
     // Check if the logged-in user is the reviewer
-    if (!review.reviewer || !review.reviewer.equals(request.user._id)) {
-      return response
-        .status(403)
-        .json({
-          message: "Access denied. Reviewer can only update your thier review.",
-        });
+    if (
+      !review.reviewer.equals(request.user._id) &&
+      request.user.role !== "admin"
+    ) {
+      return response.status(403).json({
+        message:
+          "Access denied. Only the reviewer or an admin can perform this action.",
+      });
     }
 
     const updatedReview = await Review.findByIdAndUpdate(reviewId, updateData, {
@@ -67,12 +72,14 @@ exports.deleteReview = async (request, response) => {
     }
 
     // Check if the logged-in user is the reviewer
-    if (!review.reviewer.equals(request.user._id)) {
-      return response
-        .status(403)
-        .json({
-          message: "Access denied. Reviewer can only delete it's own review.",
-        });
+    if (
+      !review.reviewer.equals(request.user._id) &&
+      request.user.role !== "admin"
+    ) {
+      return response.status(403).json({
+        message:
+          "Access denied. Only the reviewer or an admin can perform this action.",
+      });
     }
 
     await Review.findByIdAndDelete(reviewId);
