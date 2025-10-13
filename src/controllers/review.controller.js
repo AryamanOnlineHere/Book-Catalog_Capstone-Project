@@ -1,5 +1,7 @@
 const { response } = require("express");
 const Review = require("../models/review.model");
+const { getAsync, setAsync } = require("../utils/redis"); 
+
 
 // Review CRUD operations
 exports.addReview = async (request, response) => {
@@ -21,10 +23,26 @@ exports.addReview = async (request, response) => {
 };
 
 exports.getAllReview = async (request, response) => {
-  const { bookId } = request.params;
-  const reviews = await Review.find({ book: bookId });
+    const { bookId } = request.params;
 
-  response.status(200).json(reviews);
+
+  try {
+    const cacheReview=await getAsync("reviews");
+
+    if(cacheReview){
+      console.log("Serving from Redis cache");
+      return response.status(200).json(JSON.parse(cacheReview));
+    }
+    const reviews=await Review.find({book:bookId});
+    await setAsync("reviews",JSON.stringify(reviews,"EX",3600));
+
+    console.log("Servig from mongoose");
+    response.status(200).json(reviews);
+    
+  } catch (error) {
+    response.status(500).json({message:error.message});
+  }
+
 };
 
 exports.updateReviewById = async (request, response) => {
