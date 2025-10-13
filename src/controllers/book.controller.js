@@ -1,6 +1,8 @@
 const { response } = require("express");
 const Book=require("../models/book.model");
 const Review=require("../models/review.model");
+const { getAsync, setAsync } = require("../utils/redis"); 
+
 
 //Book CRUD Operation
 exports.addBook = async (request, response) => {
@@ -57,14 +59,23 @@ exports.updateBookById = async (request, response) => {
   }
 };
 
-exports.getall=async(request,response)=>{
-try {
-    const books=await Book.find();
-    response.status(200).json(books); 
-} catch (error) {
-    response.status(500).json({message: error.message});
-}
-};
+exports.getall = async (request, response) => {
+  try {
+    const cachedBooks = await getAsync("books");
 
+    if (cachedBooks) {
+      console.log("Serving from Redis cache");
+      return response.status(200).json(JSON.parse(cachedBooks));
+    }
+
+    const books = await Book.find();
+    await setAsync("books", JSON.stringify(books), "EX", 3600);
+
+    console.log("Serving from MongoDB");
+    response.status(200).json(books);
+  } catch (error) {
+    response.status(500).json({ message: error.message });
+  }
+};
 
 
