@@ -10,11 +10,10 @@ app.use(express.json());
 global.__basedir = __dirname;
 
 const initRoutes = require("./src/routes/upload.routes");
-
-
 const corsOptions = {
   origin: "http://localhost:8081"
 };
+
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__basedir, "uploads")));
