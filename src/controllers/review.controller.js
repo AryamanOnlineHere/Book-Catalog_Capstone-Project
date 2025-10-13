@@ -50,9 +50,6 @@ exports.updateReviewById = async (request, response) => {
     const { reviewId } = request.params;
     const updateData = request.body;
 
-console.log("Review ID:", reviewId);
-
-
     const review = await Review.findById(reviewId);
     if (!review) {
       return response.status(404).json({ message: "Review not found" });
